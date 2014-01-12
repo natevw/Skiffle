@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Audio test</title>
+</head><body>
+
+
+<script>
+    // http://webaudio.github.io/web-audio-api/
+    // http://dev.w3.org/2011/webrtc/editor/getusermedia.html
+    
+    // TODO: figure out why below now working
+    // c.f. http://typedarray.org/from-microphone-to-wav-with-getusermedia-and-web-audio/ (which does work!)
+    var ctx = new webkitAudioContext(),
+        recorder = ctx.createScriptProcessor(16384,1,0);
+    navigator.webkitGetUserMedia({audio:true}, function (stream) {        
+        var mic = ctx.createMediaStreamSource(stream);
+        mic.connect(recorder);
+    }, function(e) {
+        alert('Error capturing audio.');
+        throw e;
+    });
+    
+    var once;
+    recorder.onaudioprocess = function (evt) {
+        if (!once) console.log(evt);
+        once = true;
+    };
+</script>
+</body>
+</html>
